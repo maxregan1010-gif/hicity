@@ -1,0 +1,188 @@
+/* ===== شهر طوفان — منوها و پنجره‌ها ===== */
+
+/* منوی اصلی */
+.main-menu { position: fixed; inset: 0; z-index: 200; display: flex; align-items: center; justify-content: center; }
+.mm-bg {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse at 70% 20%, rgba(41,201,232,.14), transparent 55%),
+    radial-gradient(ellipse at 20% 80%, rgba(245,179,1,.12), transparent 50%),
+    linear-gradient(160deg, #0d1322 0%, #0a0e17 50%, #060810 100%);
+}
+.mm-bg::after {
+  content: ''; position: absolute; inset: 0; opacity: .5;
+  background-image: repeating-linear-gradient(45deg, transparent 0 40px, rgba(255,255,255,.014) 40px 80px);
+}
+.mm-content { position: relative; text-align: center; padding: 24px; width: min(480px, 94vw); }
+.mm-title h1 {
+  font-size: clamp(44px, 10vw, 76px); font-weight: 700;
+  background: linear-gradient(180deg, #ffe28a, #f5b301 55%, #b98a00);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.mm-sub { color: var(--cyan); letter-spacing: 8px; font-size: clamp(11px, 2.4vw, 15px); margin-top: 4px; }
+.mm-version { color: var(--text-dim); font-size: 12px; margin-top: 6px; }
+.mm-buttons { margin-top: 34px; display: flex; flex-direction: column; gap: 10px; }
+.mm-footer { margin-top: 26px; color: var(--text-dim); font-size: 12px; opacity: .75; line-height: 1.9; }
+
+/* منوی توقف */
+.pause-menu { position: fixed; inset: 0; z-index: 300; background: rgba(4,7,14,.82); display: flex; align-items: center; justify-content: center; backdrop-filter: blur(6px); }
+.pm2-box {
+  background: var(--panel-2); border: 1px solid var(--border); border-radius: 18px;
+  padding: 26px; width: min(430px, 92vw); max-height: 92vh; overflow-y: auto;
+}
+.pm2-box h2 { text-align: center; margin-bottom: 20px; color: var(--gold); }
+.pm2-buttons { display: flex; flex-direction: column; gap: 9px; }
+.pause-stats { margin-top: 18px; font-size: 13px; color: var(--text-dim); text-align: center; line-height: 2; }
+
+/* تلفن */
+.phone-ui { position: fixed; inset: 0; z-index: 320; background: rgba(4,7,14,.72); display: flex; align-items: center; justify-content: center; }
+.phone-frame {
+  width: min(340px, 92vw); background: #10141f; border-radius: 26px;
+  border: 3px solid #2a3448; padding: 14px; box-shadow: 0 20px 60px rgba(0,0,0,.7);
+}
+.phone-top { display: flex; justify-content: space-between; font-size: 13px; color: var(--text-dim); direction: ltr; }
+.phone-title { text-align: center; font-weight: 700; color: var(--gold); margin: 10px 0 14px; }
+.phone-apps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.phone-app {
+  background: linear-gradient(160deg, #1c2438, #141b2c); border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 14px; padding: 14px 6px; text-align: center; color: var(--text);
+}
+.phone-app .pa-ico { font-size: 26px; display: block; margin-bottom: 5px; }
+.phone-app .pa-name { font-size: 12px; }
+.phone-app:active, .phone-app:hover { border-color: var(--gold); }
+.phone-app.has-badge { position: relative; }
+.phone-app .pa-badge { position: absolute; top: 6px; left: 8px; background: var(--red); color: #fff; font-size: 10px; border-radius: 8px; padding: 1px 6px; }
+.phone-back { margin-top: 14px; text-align: center; }
+.phone-back button { background: rgba(255,255,255,.08); color: var(--text); border: 1px solid rgba(255,255,255,.2); padding: 9px 20px; border-radius: 9px; }
+
+/* پروفایل شخصیت */
+.char-screen { position: fixed; inset: 0; z-index: 320; background: rgba(4,7,14,.85); display: flex; align-items: center; justify-content: center; }
+.cs2-box {
+  background: var(--panel-2); border: 1px solid var(--border); border-radius: 18px;
+  padding: 22px; width: min(560px, 94vw); max-height: 92vh; overflow-y: auto;
+}
+.cs2-box h2 { text-align: center; margin-bottom: 16px; color: var(--gold); }
+.char-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 9px; margin-bottom: 16px; }
+.char-stat { background: rgba(255,255,255,0.05); border-radius: 10px; padding: 10px 13px; font-size: 13px; }
+.char-stat b { color: var(--gold); display: block; margin-top: 3px; font-size: 15px; }
+.char-clothes { margin-bottom: 14px; }
+.char-clothes h4, .char-job h4 { margin-bottom: 8px; color: var(--cyan); font-size: 14px; }
+.cloth-chip { display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.14); border-radius: 8px; padding: 5px 10px; margin: 0 0 6px 6px; font-size: 12px; }
+.cloth-swatch { width: 14px; height: 14px; border-radius: 4px; display: inline-block; border: 1px solid rgba(255,255,255,.3); }
+
+/* پنجره فروشگاه/نمایشگاه */
+.shop-ui { position: fixed; inset: 0; z-index: 340; background: rgba(4,7,14,.8); display: flex; align-items: center; justify-content: center; padding: 14px; }
+.shop-box {
+  background: var(--panel-2); border: 1px solid var(--border); border-radius: 16px;
+  width: min(760px, 96vw); max-height: 94vh; display: flex; flex-direction: column; overflow: hidden;
+}
+.shop-head { display: flex; align-items: center; gap: 12px; padding: 13px 16px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+.shop-head h3 { flex: 1; color: var(--gold); font-size: 17px; }
+.shop-money { font-size: 13px; color: var(--green); font-weight: 700; }
+.shop-body { padding: 14px; overflow-y: auto; flex: 1; }
+.shop-foot { padding: 10px 14px; border-top: 1px solid rgba(255,255,255,0.08); min-height: 48px; display: flex; align-items: center; gap: 10px; justify-content: space-between; }
+
+.shop-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 11px; }
+.shop-item {
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 12px; padding: 12px; transition: border-color .15s;
+}
+.shop-item:hover, .shop-item.sel { border-color: var(--gold); }
+.shop-item .si-name { font-weight: 700; font-size: 14px; margin-bottom: 4px; }
+.shop-item .si-desc { font-size: 12px; color: var(--text-dim); line-height: 1.7; min-height: 20px; }
+.shop-item .si-props { margin: 7px 0; }
+.si-prop { display: flex; justify-content: space-between; font-size: 11.5px; color: var(--text-dim); padding: 2px 0; }
+.si-prop b { color: var(--text); font-weight: 500; }
+.shop-item .si-price { color: var(--green); font-weight: 700; font-size: 15px; margin-top: 6px; }
+.shop-item .si-btn { margin-top: 8px; width: 100%; background: linear-gradient(180deg,#ffcf4d,#f5b301 60%,#d99c00); color: #241a02; border: 0; padding: 8px; border-radius: 8px; font-weight: 700; font-size: 13.5px; }
+.shop-item .si-btn.buy { background: linear-gradient(180deg,#4be08c,#35d073); color: #04240f; }
+.shop-item .si-btn.sell { background: linear-gradient(180deg,#ff8a80,#e8433c); color: #2b0503; }
+.shop-item .si-btn:disabled { opacity: .45; cursor: not-allowed; }
+.shop-item .si-canvas { width: 100%; height: 130px; border-radius: 10px; background: radial-gradient(ellipse at 50% 60%, #1e2a44, #0c1018); overflow: hidden; position: relative; }
+.shop-item canvas { width: 100%; height: 100%; display: block; cursor: grab; }
+.shop-item .si-tag { position: absolute; top: 8px; right: 10px; background: rgba(0,0,0,.6); color: var(--gold); padding: 2px 9px; border-radius: 6px; font-size: 11px; font-weight: 700; }
+.shop-cat-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+.shop-cat { background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.15); color: var(--text-dim); padding: 6px 14px; border-radius: 20px; font-size: 13px; }
+.shop-cat.active { border-color: var(--gold); color: var(--gold); font-weight: 700; }
+
+.row-line { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px solid rgba(255,255,255,0.06); font-size: 14px; flex-wrap: wrap; }
+.row-line .rl-grow { flex: 1; }
+.tx-in { direction: ltr; text-align: center; background: rgba(0,0,0,.4); border: 1px solid rgba(255,255,255,.2); color: #fff; padding: 8px 12px; border-radius: 8px; font-family: inherit; font-size: 14px; width: 140px; }
+.tx-in:focus { outline: none; border-color: var(--gold); }
+
+/* اسلات‌های ذخیره */
+.slot-ui { position: fixed; inset: 0; z-index: 360; background: rgba(4,7,14,.85); display: flex; align-items: center; justify-content: center; }
+.slot-box { background: var(--panel-2); border: 1px solid var(--border); border-radius: 16px; padding: 20px; width: min(480px, 94vw); max-height: 90vh; overflow-y: auto; }
+.slot-box h3 { text-align: center; margin-bottom: 14px; color: var(--gold); }
+.slot-list { display: flex; flex-direction: column; gap: 9px; margin-bottom: 12px; }
+.slot-item {
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.14); border-radius: 12px;
+  padding: 12px 14px; cursor: pointer; display: flex; align-items: center; gap: 12px;
+}
+.slot-item:hover { border-color: var(--gold); }
+.slot-item .sl-ico { font-size: 24px; }
+.slot-item .sl-info { flex: 1; }
+.slot-item .sl-name { font-weight: 700; font-size: 14px; }
+.slot-item .sl-meta { font-size: 12px; color: var(--text-dim); margin-top: 2px; }
+.slot-item .sl-btn { background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2); color: var(--text); border-radius: 7px; padding: 6px 12px; font-size: 12px; }
+.slot-item .sl-btn:hover { border-color: var(--red); color: var(--red); }
+
+/* تأیید */
+.confirm-ui { position: fixed; inset: 0; z-index: 400; background: rgba(4,7,14,.7); display: flex; align-items: center; justify-content: center; }
+.confirm-box { background: var(--panel-2); border: 1px solid var(--border); border-radius: 14px; padding: 22px; width: min(420px, 92vw); }
+.confirm-box p { line-height: 2; margin-bottom: 16px; font-size: 15px; }
+.confirm-btns { display: flex; gap: 10px; }
+.confirm-btns button { flex: 1; }
+
+/* تنظیمات */
+.settings-ui, .controls-ui { position: fixed; inset: 0; z-index: 380; background: rgba(4,7,14,.88); display: flex; align-items: center; justify-content: center; padding: 14px; }
+.set-box, .controls-box {
+  background: var(--panel-2); border: 1px solid var(--border); border-radius: 16px;
+  width: min(640px, 96vw); max-height: 94vh; display: flex; flex-direction: column; overflow: hidden;
+}
+.set-head { display: flex; align-items: center; padding: 13px 16px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+.set-head h3 { flex: 1; color: var(--gold); font-size: 17px; }
+.set-tabs { display: flex; gap: 6px; padding: 10px 14px 0; flex-wrap: wrap; }
+.set-tab { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.14); color: var(--text-dim); padding: 7px 16px; border-radius: 9px; font-size: 13.5px; }
+.set-tab.active { border-color: var(--gold); color: var(--gold); font-weight: 700; }
+.set-body { padding: 14px 16px; overflow-y: auto; flex: 1; }
+.set-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); flex-wrap: wrap; }
+.set-row label { flex: 1; min-width: 140px; font-size: 14px; }
+.set-row .set-val { min-width: 60px; text-align: center; color: var(--gold); font-weight: 700; font-size: 13px; }
+.set-row input[type="range"] { width: 160px; accent-color: #f5b301; }
+.set-row select, .set-row input[type="number"] {
+  background: rgba(0,0,0,.4); border: 1px solid rgba(255,255,255,.2); color: #fff;
+  padding: 7px 10px; border-radius: 8px; font-family: inherit; font-size: 13.5px; min-width: 130px;
+}
+.set-row .seg { display: flex; gap: 4px; }
+.set-row .seg button { background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.16); color: var(--text-dim); padding: 6px 13px; border-radius: 8px; font-size: 12.5px; }
+.set-row .seg button.active { border-color: var(--gold); color: var(--gold); font-weight: 700; }
+.set-note { font-size: 12px; color: var(--text-dim); padding: 8px 0; line-height: 1.9; }
+.key-bind { min-width: 70px; background: rgba(0,0,0,.4); border: 1px solid rgba(255,255,255,.25); color: var(--gold); padding: 6px 12px; border-radius: 8px; font-size: 13px; font-weight: 700; direction: ltr; }
+.key-bind.waiting { border-color: var(--red); color: var(--red); animation: starBlink 1s infinite; }
+.reset-keys { width: 100%; margin-top: 10px; }
+
+/* نقشه بزرگ */
+.big-map { position: fixed; inset: 0; z-index: 310; background: rgba(4,7,14,.92); display: flex; flex-direction: column; padding: 10px; padding-top: calc(10px + var(--safe-t)); }
+.bm-head { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.bm-head h3 { color: var(--gold); flex-shrink: 0; }
+.bm-legend { flex: 1; display: flex; gap: 10px; flex-wrap: wrap; font-size: 11.5px; color: var(--text-dim); }
+.bm-legend span { display: inline-flex; align-items: center; gap: 4px; }
+.bm-legend i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+.bm-map-wrap { flex: 1; position: relative; margin: 10px 0; overflow: hidden; border-radius: 14px; border: 1px solid rgba(255,255,255,0.15); background: #0b111e; cursor: grab; }
+#bigMapCanvas { position: absolute; transform-origin: 0 0; }
+.bm-tooltip { position: absolute; background: var(--panel-2); border: 1px solid var(--gold); border-radius: 8px; padding: 6px 11px; font-size: 12px; pointer-events: none; display: none; z-index: 5; white-space: nowrap; }
+.bm-foot { text-align: center; color: var(--text-dim); font-size: 12px; }
+
+/* راهنمای کنترل جدول */
+.ctrl-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+.ctrl-table td { padding: 7px 10px; border-bottom: 1px solid rgba(255,255,255,0.07); }
+.ctrl-table td:first-child { width: 90px; }
+.ctrl-table h4 { color: var(--cyan); margin: 14px 0 4px; }
+
+@media (max-width: 640px) {
+  .shop-grid { grid-template-columns: 1fr; }
+  .set-row input[type="range"] { width: 120px; }
+  .phone-apps { gap: 7px; }
+  .phone-app { padding: 10px 4px; }
+}

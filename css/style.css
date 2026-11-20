@@ -1,0 +1,146 @@
+/* ===== شهر طوفان — استایل پایه ===== */
+@font-face {
+  font-family: 'Vazirmatn';
+  src: url('../assets/fonts/Vazirmatn-Regular.woff2') format('woff2');
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Vazirmatn';
+  src: url('../assets/fonts/Vazirmatn-Medium.woff2') format('woff2');
+  font-weight: 500; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Vazirmatn';
+  src: url('../assets/fonts/Vazirmatn-Bold.woff2') format('woff2');
+  font-weight: 700; font-style: normal; font-display: swap;
+}
+
+:root {
+  --gold: #f5b301;
+  --gold-dark: #b98a00;
+  --cyan: #29c9e8;
+  --red: #e8433c;
+  --green: #35d073;
+  --bg-dark: #0a0e17;
+  --panel: rgba(10, 14, 26, 0.86);
+  --panel-2: rgba(16, 22, 38, 0.92);
+  --border: rgba(245, 179, 1, 0.35);
+  --text: #eef2f8;
+  --text-dim: #9fb0c8;
+  --hud-scale: 1;
+  --safe-b: env(safe-area-inset-bottom, 0px);
+  --safe-t: env(safe-area-inset-top, 0px);
+  --safe-l: env(safe-area-inset-left, 0px);
+  --safe-r: env(safe-area-inset-right, 0px);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body {
+  width: 100%; height: 100%;
+  overflow: hidden;
+  background: #000;
+  font-family: 'Vazirmatn', Tahoma, Arial, sans-serif;
+  color: var(--text);
+  touch-action: none;
+  overscroll-behavior: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+#renderCanvas {
+  position: fixed; inset: 0;
+  width: 100%; height: 100%;
+  outline: none; display: block;
+  touch-action: none;
+}
+
+button { font-family: inherit; cursor: pointer; }
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); }
+::-webkit-scrollbar-thumb { background: rgba(245,179,1,0.45); border-radius: 4px; }
+
+.key-cap {
+  display: inline-block; min-width: 26px; padding: 2px 7px;
+  background: #1d2740; border: 1px solid rgba(255,255,255,0.3);
+  border-bottom-width: 3px; border-radius: 6px;
+  font-weight: 700; font-size: 13px; text-align: center; color: #fff;
+}
+
+/* ===== صفحه بارگذاری ===== */
+.loading-screen {
+  position: fixed; inset: 0; z-index: 5000;
+  background: radial-gradient(ellipse at 50% 30%, #16213c 0%, #0a0e17 60%, #05070d 100%);
+  display: flex; align-items: center; justify-content: center;
+}
+.loading-inner { text-align: center; max-width: 560px; padding: 20px; }
+.loading-logo .logo-storm { font-size: 64px; filter: drop-shadow(0 0 18px rgba(245,179,1,.8)); animation: boltPulse 1.6s infinite; }
+@keyframes boltPulse { 0%,100% { transform: scale(1); opacity: .9 } 50% { transform: scale(1.12); opacity: 1 } }
+.loading-logo h1 {
+  font-size: clamp(38px, 8vw, 64px); font-weight: 700;
+  background: linear-gradient(180deg, #ffe28a, #f5b301 55%, #b98a00);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  text-shadow: none; margin-top: 4px;
+}
+.logo-en { color: var(--cyan); letter-spacing: 10px; font-size: 15px; margin-top: 2px; opacity: .85; }
+.loading-bar-wrap {
+  width: 100%; height: 14px; margin-top: 30px;
+  background: rgba(255,255,255,0.08); border-radius: 8px; overflow: hidden;
+  border: 1px solid rgba(245,179,1,.25);
+}
+.loading-bar {
+  height: 100%; width: 0%;
+  background: linear-gradient(90deg, #b98a00, #f5b301, #ffe28a);
+  transition: width .25s ease; border-radius: 8px;
+}
+.loading-text { margin-top: 14px; color: var(--text-dim); font-size: 15px; }
+.loading-tip { margin-top: 26px; color: var(--text-dim); font-size: 13px; opacity: .8; line-height: 1.9; }
+
+/* ===== خطای مهلک ===== */
+.fatal-error { position: fixed; inset: 0; z-index: 6000; background: rgba(4,6,12,.96); display: flex; align-items: center; justify-content: center; padding: 20px; }
+.fatal-box { background: var(--panel-2); border: 1px solid var(--red); border-radius: 14px; padding: 28px; max-width: 520px; text-align: center; }
+.fatal-box h2 { color: var(--red); margin-bottom: 12px; }
+.fatal-box p { margin-bottom: 10px; line-height: 1.9; color: var(--text-dim); font-size: 14px; word-break: break-word; }
+.fatal-box button { background: var(--red); color: #fff; border: 0; padding: 10px 26px; border-radius: 8px; font-size: 15px; }
+
+/* ===== دکمه‌های عمومی ===== */
+.mm-btn {
+  display: block; width: 100%;
+  background: linear-gradient(180deg, rgba(30,40,66,.95), rgba(18,24,44,.95));
+  color: var(--text); border: 1px solid rgba(255,255,255,0.14);
+  padding: 12px 18px; border-radius: 10px; font-size: 17px; font-weight: 500;
+  transition: all .15s; text-align: center;
+}
+.mm-btn:hover, .mm-btn:active { border-color: var(--gold); color: var(--gold); transform: translateY(-1px); }
+.mm-btn.primary {
+  background: linear-gradient(180deg, #ffcf4d, #f5b301 60%, #d99c00);
+  color: #241a02; font-weight: 700; border-color: rgba(255,255,255,.4);
+}
+.mm-btn.primary:hover, .mm-btn.primary:active { color: #241a02; filter: brightness(1.08); }
+.mm-btn.danger { border-color: rgba(232,67,60,.6); }
+.mm-btn.danger:hover { border-color: var(--red); color: var(--red); }
+.btn-close {
+  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2);
+  color: var(--text); padding: 7px 14px; border-radius: 8px; font-size: 14px;
+}
+.btn-close:hover { background: rgba(232,67,60,.25); border-color: var(--red); }
+
+/* ===== پوشش چرخش گوشی ===== */
+.rotate-overlay {
+  position: fixed; inset: 0; z-index: 5500;
+  background: rgba(5,7,13,.97);
+  display: flex; align-items: center; justify-content: center; text-align: center;
+}
+.rot-box h3 { margin-top: 12px; font-size: 22px; }
+.rot-box p { color: var(--text-dim); margin-top: 8px; }
+.rot-icon { font-size: 60px; animation: rotAnim 1.8s infinite ease-in-out; }
+@keyframes rotAnim { 0%,20% { transform: rotate(0) } 60%,100% { transform: rotate(90deg) } }
+
+/* ===== درخواست شروع صدا ===== */
+.audio-start { position: fixed; inset: 0; z-index: 5400; background: rgba(5,7,13,.9); display: flex; align-items: center; justify-content: center; }
+.audio-box { text-align: center; max-width: 420px; padding: 24px; background: var(--panel-2); border-radius: 16px; border: 1px solid var(--border); }
+.audio-box h3 { margin-bottom: 10px; }
+.audio-box p { color: var(--text-dim); margin-bottom: 18px; line-height: 1.8; }
+.audio-box .mm-btn { width: auto; padding: 12px 34px; }
+
+@media (max-width: 640px) {
+  .mm-btn { padding: 11px 14px; font-size: 15px; }
+}

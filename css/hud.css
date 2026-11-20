@@ -1,0 +1,188 @@
+/* ===== شهر طوفان — HUD بازی ===== */
+.hud { position: fixed; inset: 0; z-index: 100; pointer-events: none; direction: rtl; }
+.hud > * { position: absolute; }
+
+/* پول */
+.hud-money { top: calc(12px + var(--safe-t)); left: calc(14px + var(--safe-l)); text-align: left; direction: ltr; transform: scaleX(-1); }
+.hud-money > * { transform: scaleX(-1); }
+.hud-money { transform: none; left: calc(14px + var(--safe-l)); direction: rtl; }
+.hud-cash-row { display: flex; align-items: center; gap: 7px; background: var(--panel); padding: 5px 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.12); margin-bottom: 5px; min-width: 150px; justify-content: flex-start; }
+.hud-cash-row.bank { border-color: rgba(41,201,232,.4); }
+.m-ico { font-size: 16px; }
+.m-val { font-weight: 700; font-size: 16px; color: var(--green); letter-spacing: .5px; }
+.hud-cash-row.bank .m-val { color: var(--cyan); }
+.money-flash {
+  position: absolute; left: 0; top: 100%; margin-top: 6px;
+  font-weight: 700; font-size: 17px; opacity: 0; pointer-events: none; white-space: nowrap;
+  text-shadow: 0 2px 6px rgba(0,0,0,.8);
+}
+.money-flash.show { animation: moneyUp 1.8s ease forwards; }
+.money-flash.plus { color: var(--green); }
+.money-flash.minus { color: var(--red); }
+@keyframes moneyUp { 0% { opacity: 0; transform: translateY(8px) } 15% { opacity: 1; transform: translateY(0) } 75% { opacity: 1 } 100% { opacity: 0; transform: translateY(-14px) } }
+
+/* بالا چپ: ساعت */
+.hud-topleft { top: calc(12px + var(--safe-t)); right: calc(14px + var(--safe-r)); text-align: right; }
+.hud-clock { font-size: 26px; font-weight: 700; color: #fff; text-shadow: 0 2px 8px rgba(0,0,0,.9); }
+.hud-date { font-size: 13px; color: var(--text-dim); text-shadow: 0 1px 4px rgba(0,0,0,.9); }
+.hud-district { margin-top: 4px; font-size: 16px; font-weight: 700; color: var(--gold); text-shadow: 0 2px 6px rgba(0,0,0,.9); }
+.hud-weather { font-size: 13px; color: var(--text-dim); text-shadow: 0 1px 4px rgba(0,0,0,.9); }
+
+/* تعقیب پلیس */
+.hud-wanted { top: calc(12px + var(--safe-t)); left: 50%; transform: translateX(-50%); text-align: center; }
+.wanted-stars { font-size: 26px; letter-spacing: 3px; text-shadow: 0 0 12px rgba(232,67,60,.9); }
+.wanted-stars .star { color: var(--red); animation: starBlink 1s infinite; }
+.wanted-stars .star.off { color: rgba(255,255,255,.22); animation: none; }
+.wanted-stars .star.ap { animation: starAp .35s ease; }
+@keyframes starBlink { 50% { opacity: .55 } }
+@keyframes starAp { from { transform: scale(2); opacity: 0 } to { transform: scale(1); opacity: 1 } }
+.wanted-hint { font-size: 12px; color: #ffb4b0; text-shadow: 0 1px 4px #000; margin-top: 2px; }
+
+/* سلامت */
+.hud-vitals { bottom: calc(14px + var(--safe-b)); right: calc(14px + var(--safe-r)); width: 210px; }
+.vital-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; background: var(--panel); border-radius: 9px; padding: 4px 9px; border: 1px solid rgba(255,255,255,0.1); }
+.v-ico { font-size: 14px; }
+.v-bar { flex: 1; height: 12px; background: rgba(0,0,0,.55); border-radius: 7px; overflow: hidden; }
+.v-fill { height: 100%; width: 100%; border-radius: 7px; transition: width .25s; }
+.v-fill.health { background: linear-gradient(90deg, #e8433c, #ff8a5c); }
+.v-fill.stamina { background: linear-gradient(90deg, #f5b301, #ffe28a); }
+.v-fill.fuel-fill { background: linear-gradient(90deg, #29c9e8, #8ff3ff); }
+.v-fill.veh-fill { background: linear-gradient(90deg, #7f8ea3, #c3d0e2); }
+.v-num { font-size: 12px; font-weight: 700; min-width: 30px; text-align: center; color: #fff; }
+.vital-row.weapon .v-ico { font-size: 18px; }
+.v-num.ammo { min-width: 50px; }
+
+/* پنل مأموریت */
+.hud-mission { top: calc(12px + var(--safe-t)); left: calc(14px + var(--safe-l)); width: 270px; background: var(--panel); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; }
+.hud-mission, .hud-job { pointer-events: none; }
+.hud-mission .pm-head, .hud-job .pm-head { display: flex; align-items: center; gap: 8px; background: rgba(245,179,1,.14); padding: 8px 12px; }
+.hud-job .pm-head.job { background: rgba(41,201,232,.13); }
+.pm-title { font-weight: 700; font-size: 14px; color: var(--gold); }
+.hud-job .pm-title { color: var(--cyan); }
+.pm-desc { padding: 6px 12px 0; font-size: 12px; color: var(--text-dim); line-height: 1.7; }
+.pm-objective { padding: 8px 12px; font-size: 13.5px; font-weight: 500; color: #fff; line-height: 1.7; }
+.pm-steps { padding: 0 12px 6px; }
+.pm-step { font-size: 12px; color: var(--text-dim); padding: 2px 0; display: flex; gap: 6px; align-items: center; }
+.pm-step.done { color: var(--green); text-decoration: line-through; }
+.pm-step.cur { color: var(--gold); font-weight: 700; }
+.pm-reward { padding: 0 12px 8px; font-size: 12px; color: var(--green); font-weight: 700; }
+.pm-progress { padding: 0 12px 10px; }
+.pm-progress .pg-bar { height: 7px; background: rgba(0,0,0,.5); border-radius: 4px; overflow: hidden; }
+.pm-progress .pg-fill { height: 100%; background: linear-gradient(90deg, var(--gold), #ffe28a); transition: width .3s; border-radius: 4px; }
+.pm-progress .pg-text { font-size: 11px; color: var(--text-dim); margin-top: 3px; }
+
+/* پنل شغل */
+.hud-job { top: calc(12px + var(--safe-t)); left: calc(14px + var(--safe-l)); width: 270px; background: var(--panel); border-radius: 12px; border: 1px solid rgba(41,201,232,.4); }
+.hud-mission.job-shifted { top: calc(12px + var(--safe-t)); }
+
+/* خودرو */
+.hud-vehicle { bottom: calc(120px + var(--safe-b)); right: calc(14px + var(--safe-r)); background: var(--panel); border-radius: 12px; padding: 10px 14px; border: 1px solid rgba(255,255,255,0.12); min-width: 190px; text-align: center; }
+.hud-vehicle .veh-speed { display: flex; align-items: baseline; justify-content: center; gap: 5px; direction: ltr; }
+.veh-num { font-size: 34px; font-weight: 700; color: #fff; line-height: 1; }
+.veh-unit { font-size: 12px; color: var(--text-dim); }
+.veh-gear { font-size: 12px; color: var(--text-dim); margin: 3px 0 6px; }
+.veh-rows { display: flex; flex-direction: column; gap: 4px; }
+.veh-row { display: flex; align-items: center; gap: 7px; }
+.veh-row .v-bar { height: 9px; }
+.veh-name { font-size: 12px; color: var(--gold); margin-top: 6px; font-weight: 700; }
+
+/* اعلان‌ها */
+.hud-notifications { bottom: calc(110px + var(--safe-b)); left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 7px; width: min(460px, 90vw); }
+.notif {
+  background: var(--panel-2); border-radius: 10px; padding: 9px 16px;
+  border: 1px solid rgba(255,255,255,0.15); font-size: 14px; text-align: center;
+  animation: notifIn .3s ease; max-width: 100%; line-height: 1.7;
+  box-shadow: 0 4px 18px rgba(0,0,0,.5);
+}
+.notif.success { border-color: rgba(53,208,115,.55); }
+.notif.warn { border-color: rgba(245,179,1,.55); }
+.notif.error { border-color: rgba(232,67,60,.6); }
+.notif.out { animation: notifOut .4s ease forwards; }
+@keyframes notifIn { from { opacity: 0; transform: translateY(12px) scale(.95) } to { opacity: 1; transform: none } }
+@keyframes notifOut { to { opacity: 0; transform: translateY(-10px) } }
+
+/* تعامل */
+.hud-interact {
+  bottom: calc(170px + var(--safe-b)); left: 50%; transform: translateX(-50%);
+  background: var(--panel-2); border: 1px solid var(--border); border-radius: 10px;
+  padding: 9px 16px; display: flex; align-items: center; gap: 10px; font-size: 14px;
+}
+.hud-interact .key-cap { border-color: var(--gold); color: var(--gold); }
+
+/* مکالمه */
+.hud-dialogue {
+  bottom: calc(24px + var(--safe-b)); left: 50%; transform: translateX(-50%);
+  width: min(620px, 92vw); background: var(--panel-2); border-radius: 14px;
+  border: 1px solid var(--border); overflow: hidden; pointer-events: auto;
+}
+.dlg-name { background: rgba(245,179,1,.16); padding: 8px 16px; font-weight: 700; color: var(--gold); font-size: 14px; }
+.dlg-text { padding: 12px 16px; font-size: 15px; line-height: 2; min-height: 48px; }
+.dlg-options { display: flex; flex-direction: column; gap: 6px; padding: 0 14px 12px; }
+.dlg-opt { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.15); color: var(--text); padding: 9px 14px; border-radius: 9px; font-size: 14px; text-align: right; pointer-events: auto; }
+.dlg-opt:hover { border-color: var(--gold); color: var(--gold); }
+
+/* کات‌سین */
+.cutscene-ui { position: absolute; inset: 0; }
+.cs-bar { position: absolute; left: 0; right: 0; height: 11vh; background: #000; }
+.cs-bar.top { top: 0 } .cs-bar.bottom { bottom: 0 }
+.cs-subtitle {
+  position: absolute; bottom: 12.5vh; left: 50%; transform: translateX(-50%);
+  width: min(720px, 92vw); text-align: center; font-size: clamp(15px, 2.4vw, 20px);
+  line-height: 2; text-shadow: 0 2px 8px #000, 0 0 20px rgba(0,0,0,.8);
+}
+.cs-skip {
+  position: absolute; bottom: calc(3vh + var(--safe-b)); left: 16px;
+  background: rgba(0,0,0,.6); padding: 7px 14px; border-radius: 8px;
+  font-size: 12px; color: var(--text-dim); border: 1px solid rgba(255,255,255,0.2);
+}
+
+/* نقشه کوچک */
+.minimap-wrap {
+  bottom: calc(14px + var(--safe-b)); left: calc(14px + var(--safe-l));
+  width: 200px; height: 200px; border-radius: 14px; overflow: hidden;
+  border: 2px solid rgba(255,255,255,0.25); box-shadow: 0 6px 24px rgba(0,0,0,.6);
+  background: #141a2a;
+}
+#minimap { width: 100%; height: 100%; display: block; }
+.mm-compass {
+  position: absolute; top: 4px; right: 8px; font-size: 13px; font-weight: 700;
+  color: var(--gold); text-shadow: 0 1px 4px #000;
+}
+
+/* کراس‌هیر */
+.crosshair { top: 50%; left: 50%; transform: translate(-50%, -50%); width: 18px; height: 18px; }
+.crosshair::before, .crosshair::after {
+  content: ''; position: absolute; background: rgba(255,255,255,.9); box-shadow: 0 0 3px #000;
+}
+.crosshair::before { left: 50%; top: 0; bottom: 0; width: 2px; margin-left: -1px; }
+.crosshair::after { top: 50%; left: 0; right: 0; height: 2px; margin-top: -1px; }
+
+/* GPS */
+.gps-hint {
+  top: calc(60px + var(--safe-t)); right: calc(14px + var(--safe-r));
+  background: var(--panel); border-radius: 9px; padding: 6px 13px; font-size: 13px;
+  border: 1px solid var(--border); color: var(--gold); font-weight: 500;
+}
+
+.hud-fps { top: calc(44px + var(--safe-t)); left: calc(14px + var(--safe-l)); font-size: 12px; color: var(--text-dim); background: rgba(0,0,0,.4); padding: 3px 8px; border-radius: 6px; direction: ltr; }
+
+/* حالت کات‌سین: مخفی کردن HUD */
+.hud.cinema .hud-money, .hud.cinema .hud-topleft, .hud.cinema .hud-vitals,
+.hud.cinema .hud-vehicle, .hud.cinema .minimap-wrap, .hud.cinema .hud-mission,
+.hud.cinema .hud-job, .hud.cinema .crosshair, .hud.cinema .hud-interact { display: none !important; }
+
+@media (max-width: 900px) {
+  .minimap-wrap { width: 150px; height: 150px; }
+  .hud-mission, .hud-job { width: 220px; }
+  .hud-vitals { width: 170px; }
+  .hud-vehicle { min-width: 160px; padding: 7px 10px; }
+  .veh-num { font-size: 26px; }
+  .pm-objective { font-size: 12px; }
+}
+@media (max-height: 480px) {
+  .minimap-wrap { width: 118px; height: 118px; }
+  .hud-clock { font-size: 20px; }
+  .hud-mission, .hud-job { width: 190px; }
+  .pm-desc { display: none; }
+  .pm-reward { display: none; }
+}

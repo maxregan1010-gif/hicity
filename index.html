@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0a0e17">
+<title>شهر طوفان — Toofan City</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/hud.css">
+<link rel="stylesheet" href="css/menus.css">
+<link rel="stylesheet" href="css/mobile.css">
+</head>
+<body>
+<canvas id="renderCanvas" touch-action="none"></canvas>
+
+<!-- ===== صفحه بارگذاری ===== -->
+<div id="loadingScreen" class="loading-screen">
+  <div class="loading-inner">
+    <div class="loading-logo">
+      <div class="logo-storm">⚡</div>
+      <h1>شهر طوفان</h1>
+      <div class="logo-en">TOOFAN CITY</div>
+    </div>
+    <div class="loading-bar-wrap"><div id="loadingBar" class="loading-bar"></div></div>
+    <div id="loadingText" class="loading-text">در حال آماده‌سازی موتور بازی…</div>
+    <div id="loadingTip" class="loading-tip"></div>
+  </div>
+</div>
+
+<!-- ===== خطای WebGL ===== -->
+<div id="fatalError" class="fatal-error" style="display:none">
+  <div class="fatal-box">
+    <h2>خطا در اجرای بازی</h2>
+    <p id="fatalErrorMsg"></p>
+    <p class="fatal-hint">برای اجرای بازی به مرورگری با پشتیبانی WebGL2 نیاز دارید (Chrome، Edge، Firefox، Safari نسخه جدید).</p>
+    <button onclick="location.reload()">تلاش مجدد</button>
+  </div>
+</div>
+
+<!-- ===== منوی اصلی ===== -->
+<div id="mainMenu" class="main-menu" style="display:none">
+  <div class="mm-bg"></div>
+  <div class="mm-content">
+    <div class="mm-title">
+      <h1>شهر طوفان</h1>
+      <div class="mm-sub">TOOFAN CITY — جهان‌باز سه‌بعدی</div>
+      <div class="mm-version">نسخه ۱٫۰</div>
+    </div>
+    <div class="mm-buttons">
+      <button id="mmContinue" class="mm-btn primary">ادامه بازی</button>
+      <button id="mmNew" class="mm-btn">بازی جدید</button>
+      <button id="mmLoad" class="mm-btn">بارگذاری بازی</button>
+      <button id="mmSettings" class="mm-btn">تنظیمات</button>
+      <button id="mmControls" class="mm-btn">راهنمای کنترل</button>
+      <button id="mmCredits" class="mm-btn">درباره بازی</button>
+    </div>
+    <div class="mm-footer">برای تجربه کامل، صفحه گوشی را افقی بگیرید • F خروج/ورود خودرو • E تعامل • M نقشه</div>
+  </div>
+</div>
+
+<!-- ===== HUD بازی ===== -->
+<div id="hud" class="hud" style="display:none">
+  <!-- بالا راست: پول -->
+  <div id="hudMoney" class="hud-money">
+    <div class="hud-cash-row"><span class="m-ico cash">💵</span><span id="hudCash" class="m-val">۰</span></div>
+    <div class="hud-cash-row bank"><span class="m-ico bank">🏦</span><span id="hudBank" class="m-val">۰</span></div>
+    <div id="moneyFlash" class="money-flash"></div>
+  </div>
+  <!-- بالا چپ: ساعت و منطقه -->
+  <div id="hudTopLeft" class="hud-topleft">
+    <div id="hudClock" class="hud-clock">۰۸:۰۰</div>
+    <div id="hudDate" class="hud-date">روز ۱ — شنبه</div>
+    <div id="hudDistrict" class="hud-district">مرکز شهر</div>
+    <div id="hudWeather" class="hud-weather">☀️ آفتابی</div>
+  </div>
+  <!-- ستاره تعقیب -->
+  <div id="hudWanted" class="hud-wanted" style="display:none">
+    <div id="wantedStars" class="wanted-stars"></div>
+    <div id="wantedHint" class="wanted-hint"></div>
+  </div>
+  <!-- پایین راست: سلامت و استقامت -->
+  <div id="hudVitals" class="hud-vitals">
+    <div class="vital-row"><span class="v-ico">❤️</span><div class="v-bar"><div id="barHealth" class="v-fill health"></div></div><span id="valHealth" class="v-num">۱۰۰</span></div>
+    <div class="vital-row"><span class="v-ico">⚡</span><div class="v-bar"><div id="barStamina" class="v-fill stamina"></div></div><span id="valStamina" class="v-num">۱۰۰</span></div>
+    <div class="vital-row weapon"><span id="weaponIcon" class="v-ico">👊</span><span id="valAmmo" class="v-num ammo"></span></div>
+  </div>
+  <!-- پایین وسط راست: پنل مأموریت -->
+  <div id="hudMission" class="hud-mission" style="display:none">
+    <div class="pm-head"><span class="pm-ico">🎯</span><span id="pmTitle" class="pm-title">مأموریت</span></div>
+    <div id="pmDesc" class="pm-desc"></div>
+    <div id="pmObjective" class="pm-objective"></div>
+    <div id="pmSteps" class="pm-steps"></div>
+    <div id="pmReward" class="pm-reward"></div>
+    <div id="pmProgress" class="pm-progress"></div>
+  </div>
+  <!-- پنل مأموریت شغلی -->
+  <div id="hudJob" class="hud-job" style="display:none">
+    <div class="pm-head job"><span class="pm-ico">🧰</span><span id="jobPanelTitle" class="pm-title">شغل من</span></div>
+    <div id="jobPanelTask" class="pm-objective"></div>
+    <div id="jobPanelInfo" class="pm-desc"></div>
+    <div id="jobPanelProgress" class="pm-progress"></div>
+  </div>
+  <!-- اطلاعات خودرو -->
+  <div id="hudVehicle" class="hud-vehicle" style="display:none">
+    <div class="veh-speed"><span id="vehSpeed" class="veh-num">۰</span><span class="veh-unit">km/h</span></div>
+    <div class="veh-gear" id="vehGear">دنده: D</div>
+    <div class="veh-rows">
+      <div class="veh-row"><span class="v-ico">⛽</span><div class="v-bar fuel"><div id="barFuel" class="v-fill fuel-fill"></div></div></div>
+      <div class="veh-row"><span class="v-ico">🔧</span><div class="v-bar"><div id="barVehHealth" class="v-fill veh-fill"></div></div></div>
+    </div>
+    <div id="vehName" class="veh-name"></div>
+  </div>
+  <!-- اعلان‌ها -->
+  <div id="hudNotifications" class="hud-notifications"></div>
+  <!-- راهنمای تعامل -->
+  <div id="hudInteract" class="hud-interact" style="display:none"><span class="key-cap" id="interactKey">E</span><span id="interactText"></span></div>
+  <!-- مکالمه -->
+  <div id="hudDialogue" class="hud-dialogue" style="display:none">
+    <div id="dlgName" class="dlg-name"></div>
+    <div id="dlgText" class="dlg-text"></div>
+    <div id="dlgOptions" class="dlg-options"></div>
+  </div>
+  <!-- زیرنویس کات‌سین -->
+  <div id="cutsceneUI" class="cutscene-ui" style="display:none">
+    <div class="cs-bar top"></div>
+    <div class="cs-bar bottom"></div>
+    <div id="csSubtitle" class="cs-subtitle"></div>
+    <div class="cs-skip">رد کردن ⏩ (Esc)</div>
+  </div>
+  <!-- نقشه کوچک -->
+  <div id="minimapWrap" class="minimap-wrap">
+    <canvas id="minimap" width="260" height="260"></canvas>
+    <div id="minimapCompass" class="mm-compass">ش</div>
+  </div>
+  <!-- جوی‌استیک موبایل -->
+  <div id="joystickZone" class="joystick-zone" style="display:none">
+    <div id="joyBase" class="joy-base"><div id="joyKnob" class="joy-knob"></div></div>
+  </div>
+  <!-- دکمه‌های لمسی -->
+  <div id="touchButtons" class="touch-buttons" style="display:none"></div>
+  <!-- کراس‌هیر -->
+  <div id="crosshair" class="crosshair" style="display:none"></div>
+  <!-- نوار حفاظت محیط؟ placeholder حذف -->
+  <div id="hudFps" class="hud-fps" style="display:none"></div>
+  <div id="gpsHint" class="gps-hint" style="display:none"></div>
+</div>
+
+<!-- ===== نقشه بزرگ ===== -->
+<div id="bigMap" class="big-map" style="display:none">
+  <div class="bm-head">
+    <h3>🗺️ نقشه شهر طوفان</h3>
+    <div class="bm-legend" id="bmLegend"></div>
+    <button id="bmClose" class="btn-close">✕ بستن (M)</button>
+  </div>
+  <div class="bm-map-wrap" id="bmMapWrap">
+    <canvas id="bigMapCanvas" width="1600" height="1600"></canvas>
+    <div id="bmTooltip" class="bm-tooltip"></div>
+  </div>
+  <div class="bm-foot">برای تعیین مقصد روی نقشه کلیک کنید • اسکرول/پینچ: زوم • درگ: جابه‌جایی</div>
+</div>
+
+<!-- ===== منوی توقف ===== -->
+<div id="pauseMenu" class="pause-menu" style="display:none">
+  <div class="pm2-box">
+    <h2>⛔ توقف بازی</h2>
+    <div class="pm2-buttons">
+      <button id="pmResume" class="mm-btn primary">ادامه بازی</button>
+      <button id="pmSave" class="mm-btn">ذخیره بازی</button>
+      <button id="pmLoad" class="mm-btn">بارگذاری بازی</button>
+      <button id="pmSettings" class="mm-btn">تنظیمات</button>
+      <button id="pmControls" class="mm-btn">راهنمای کنترل</button>
+      <button id="pmQuit" class="mm-btn danger">بازگشت به منوی اصلی</button>
+    </div>
+    <div id="pauseStats" class="pause-stats"></div>
+  </div>
+</div>
+
+<!-- ===== تلفن همراه ===== -->
+<div id="phoneUI" class="phone-ui" style="display:none">
+  <div class="phone-frame">
+    <div class="phone-top"><span id="phoneClock">۰۸:۰۰</span><span class="phone-net">📶 ۴G</span></div>
+    <div class="phone-title">موبایل آرش</div>
+    <div class="phone-apps" id="phoneApps"></div>
+    <div class="phone-back"><button id="phoneClose">بستن تلفن</button></div>
+  </div>
+</div>
+
+<!-- ===== صفحه شخصیت ===== -->
+<div id="charScreen" class="char-screen" style="display:none">
+  <div class="cs2-box">
+    <h2>👤 پروفایل آرش راد</h2>
+    <div id="charStats" class="char-stats"></div>
+    <div id="charClothes" class="char-clothes"></div>
+    <div id="charJob" class="char-job"></div>
+    <div class="pm2-buttons"><button id="charClose" class="mm-btn primary">بستن (I)</button></div>
+  </div>
+</div>
+
+<!-- ===== پنجره‌های عمومی (فروشگاه/نمایشگاه/بانک/گاراژ/لباس) ===== -->
+<div id="shopUI" class="shop-ui" style="display:none">
+  <div class="shop-box">
+    <div class="shop-head">
+      <h3 id="shopTitle">فروشگاه</h3>
+      <div id="shopMoney" class="shop-money"></div>
+      <button id="shopClose" class="btn-close">✕</button>
+    </div>
+    <div id="shopBody" class="shop-body"></div>
+    <div id="shopFoot" class="shop-foot"></div>
+  </div>
+</div>
+
+<!-- ===== لیست ذخیره/بارگذاری ===== -->
+<div id="slotUI" class="slot-ui" style="display:none">
+  <div class="slot-box">
+    <h3 id="slotTitle">ذخیره بازی</h3>
+    <div id="slotList" class="slot-list"></div>
+    <div class="pm2-buttons"><button id="slotClose" class="mm-btn primary">بستن</button></div>
+  </div>
+</div>
+
+<!-- ===== تأیید عمومی ===== -->
+<div id="confirmUI" class="confirm-ui" style="display:none">
+  <div class="confirm-box">
+    <p id="confirmText"></p>
+    <div class="confirm-btns">
+      <button id="confirmYes" class="mm-btn primary">بله</button>
+      <button id="confirmNo" class="mm-btn">خیر</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== تنظیمات ===== -->
+<div id="settingsUI" class="settings-ui" style="display:none">
+  <div class="set-box">
+    <div class="set-head">
+      <h3>⚙️ تنظیمات</h3>
+      <button id="setClose" class="btn-close">✕</button>
+    </div>
+    <div class="set-tabs">
+      <button data-tab="graphics" class="set-tab active">گرافیک</button>
+      <button data-tab="audio" class="set-tab">صدا</button>
+      <button data-tab="controls" class="set-tab">کنترل</button>
+      <button data-tab="mobile" class="set-tab">موبایل</button>
+      <button data-tab="game" class="set-tab">بازی</button>
+    </div>
+    <div id="setBody" class="set-body"></div>
+  </div>
+</div>
+
+<!-- ===== راهنمای کنترل ===== -->
+<div id="controlsUI" class="controls-ui" style="display:none">
+  <div class="controls-box">
+    <div class="set-head"><h3>🎮 راهنمای کنترل</h3><button id="ctrlClose" class="btn-close">✕</button></div>
+    <div id="ctrlBody" class="set-body"></div>
+  </div>
+</div>
+
+<!-- ===== مکالمه/دیالوگ مرکزی (بازتاب HUD) ===== -->
+<!-- ===== چرخش گوشی ===== -->
+<div id="rotateOverlay" class="rotate-overlay" style="display:none">
+  <div class="rot-box">
+    <div class="rot-icon">📱↻</div>
+    <h3>گوشی را بچرخانید</h3>
+    <p>شهر طوفان در حالت افقی بهترین تجربه را دارد.</p>
+  </div>
+</div>
+
+<!-- ===== درخواست شروع صدا ===== -->
+<div id="audioStart" class="audio-start" style="display:none">
+  <div class="audio-box">
+    <h3>🔊 شروع تجربه</h3>
+    <p>برای فعال‌سازی صدا و شروع بازی کلیک کنید.</p>
+    <button id="audioStartBtn" class="mm-btn primary">ورود به شهر طوفان</button>
+  </div>
+</div>
+
+<script src="assets/js/babylon.js"></script>
+<script src="js/core.js"></script>
+<script src="js/navigation.js"></script>
+<script src="js/physics.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/engine.js"></script>
+<script src="js/world.js"></script>
+<script src="js/worldProps.js"></script>
+<script src="js/daynight.js"></script>
+<script src="js/weather.js"></script>
+<script src="js/player.js"></script>
+<script src="js/inventory.js"></script>
+<script src="js/camera.js"></script>
+<script src="js/vehicles.js"></script>
+<script src="js/npc.js"></script>
+<script src="js/police.js"></script>
+<script src="js/prison.js"></script>
+<script src="js/economy.js"></script>
+<script src="js/jobs.js"></script>
+<script src="js/jobMissions.js"></script>
+<script src="js/missions.js"></script>
+<script src="js/housing.js"></script>
+<script src="js/shops.js"></script>
+<script src="js/dealerships.js"></script>
+<script src="js/map.js"></script>
+<script src="js/hud.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/save.js"></script>
+<script src="js/mobileControls.js"></script>
+<script src="js/gamepad.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
